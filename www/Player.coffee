@@ -14,9 +14,9 @@ class Player
 		@buttons = []              # x   y   w   h (relativt centrum)
 		@buttons.push new Button 0,0.5,0, @,-10.5,  0, 7.5, 15, "","1+i"
 		@buttons.push new Button 1,0,0, @, 10.5,  0, 7.5, 15, "","-2i"
-		@buttons.push new Button 0,0,0, @,-10.5, 21, 7.5, 15, keys[1],"+1"
-		@buttons.push new Button 0,0,0, @,  0, 21, 7.5, 15, keys[0],"undo"
-		@buttons.push new Button 0,0,0, @, 10.5, 21, 7.5, 15, keys[2],"*i"
+		@buttons.push new Button 1,1,0, @,-10.5, 21, 7.5, 15, keys[1],"+1"
+		@buttons.push new Button 0.25,0.25,0.25, @,  0, 21, 7.5, 15, keys[0],"undo"
+		@buttons.push new Button 1,1,0, @, 10.5, 21, 7.5, 15, keys[2],"*i"
 
 	draw : ->
 		if @keys == "SAD"
@@ -74,7 +74,7 @@ class Player
 
 	complexPoint : (n,r,g,b,c)->
 		if abs(c.x) <= 10 and abs(c.y) <= 10 
-			fc r,g,b
+			fc r,g,b,0.75
 			sc()
 			circle n*c.x,-n*c.y,n/2
 
