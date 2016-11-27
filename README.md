@@ -8,3 +8,4 @@ Each operation costs ten seconds.
 ## Usage
 
 Click on the link above.
+Use WASD and arrow keys.
