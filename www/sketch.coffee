@@ -8,8 +8,8 @@ class Game
 		w = width
 		h = height   
 		@mode = 0                                                     
-		@players.push new Player "SAD",30,30, 60,60
-		@players.push new Player "(%'",90,30, 60,60
+		@players.push new Player "WASD",30,30, 60,60
+		@players.push new Player "&%('",90,30, 60,60
 		@display = new Button 0,0,0, @, 0, -22, 8, 12, "",""
 	push : ->
 		@stack.push [@x,@y,@a,@s]
@@ -88,8 +88,9 @@ class Game
 		for j in range @level
 			lst2 = []
 			for item in lst
-				save item, item.add(new Complex(1,0)) 
 				save item, item.mul(new Complex(0,1)) 
+				save item, item.mul(new Complex(2,0)) 
+				save item, item.add(new Complex(1,0)) 
 			lst = lst2
 		i = int random lst.length
 		b = lst[i]		
