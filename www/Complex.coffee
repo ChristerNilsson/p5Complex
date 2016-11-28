@@ -41,3 +41,4 @@ assert "1-i", new Complex(1,-1).toString()
 assert "1", new Complex(1,0).toString()
 assert "1+i", new Complex(1,1).toString()
 assert "1+2i", new Complex(1,2).toString()
+
