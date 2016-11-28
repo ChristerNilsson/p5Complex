@@ -10,7 +10,8 @@ class Game
 		@mode = 0                                                     
 		@players.push new Player "WASD",30,30, 60,60
 		@players.push new Player "&%('",90,30, 60,60
-		@display = new Button 0,0,0, @, 0.2, 0, -22, 8, 12, "",""
+		@display =  new Button 0,0,0, @, 0.2, 0, -24, 6, 12, "",""
+
 	push : ->
 		@stack.push [@x,@y,@a,@s]
 		push()
@@ -130,6 +131,7 @@ setup = ->
 	xdraw()
 
 xdraw = ->
+	bg 0.5
 	g.push()
 	g.translate int(width/2), int(height/2)	# integers needed here or blurry grid lines
 
@@ -138,8 +140,8 @@ xdraw = ->
 		g.translate (2*i-1) * width/4, 0
 		player.draw()
 		g.pop()
-  g.result() if g.mode==1
 	g.display.draw()	
+	g.result() if g.mode==1
 	g.pop()
 
 touchStarted = -> 
@@ -158,10 +160,14 @@ mousePressed = ->
 	xdraw()
 
 keyPressed = ->
-	player.keyPressed(key) for player in g.players
 	if key == ' ' 
-		autolevel()
-		g.createProblem()
+		#if g.mode==0
+			#autolevel()
+			#g.createProblem()
+		#else
+		g.display.keyPressed(key)
+	else
+		player.keyPressed(key) for player in g.players
 	xdraw()
 
 autolevel = ->
