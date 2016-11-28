@@ -72,7 +72,6 @@ class Game
 			text number.toString(), x*100, -8.5*H + y*H		
 
 	createProblem : ->
-		n = 999999 #int Math.pow 2, 2+@level/3 # nodes
 		x = int random -5,6
 		y = int random -5,6
 		a = new Complex x,y
@@ -80,21 +79,25 @@ class Game
 		tree = {}
 		tree[a.toString()] = null 
 		lst2 = []
+
+		c1 = new Complex 0,1
+		c2 = new Complex 2,0
+		c3 = new Complex 1,0
+
 		save = (item1, item2) ->
-			if abs(item2.x) <= n and abs(item2.y) <= n
-				if item2 not of tree
-					lst2.push item2
-					tree[item2] = item1
+			if item2 not of tree
+				lst2.push item2
+				tree[item2] = item1
+
 		for j in range @level
 			lst2 = []
 			for item in lst
-				save item, item.mul(new Complex(0,1)) 
-				save item, item.mul(new Complex(2,0)) 
-				save item, item.add(new Complex(1,0)) 
+				save item, item.mul c1
+				save item, item.mul c2
+				save item, item.add c3
 			lst = lst2
-			print lst
-		i = int random lst.length
-		b = lst[i]		
+			
+		b = @selectTarget lst
 		@solution = @path b,tree
 
 		d = new Date()
@@ -110,6 +113,10 @@ class Game
 	path : (b,tree) ->
 		return [] if b == null
 		@path(tree[b], tree).concat([b])
+
+	selectTarget : (lst) -> # within 21x21 window, if possible
+		bs = (item for item in lst when -10 < item.x <= 10 and -10 < item.y <= 10)
+		_.sample if bs.length > 0 then bs else lst
 
 setup = ->
 	createCanvas windowWidth, windowHeight
