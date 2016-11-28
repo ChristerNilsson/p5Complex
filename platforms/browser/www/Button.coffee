@@ -1,5 +1,5 @@
 class Button
-	constructor: (@parent,@x,@y,@w,@h,@key,@txt) -> # sixties
+	constructor: (@r,@g,@b, @parent,@x,@y,@w,@h,@key,@txt) -> # sixties
 		@w0=99
 		@h0=99
 
@@ -16,7 +16,7 @@ class Button
 		fc 1,1,1,0.5
 		rect 0, 0,  width*@w/60, height*@h/60
 
-		fc 0
+		fc @r,@g,@b
 		textSize (@h0+@w0)/6
 		text @txt,0,0 
 		g.pop()

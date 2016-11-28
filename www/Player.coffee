@@ -9,39 +9,40 @@ class Player
 		@count = 0
 		@level = 0
 
-		@buttons = []              # x   y   w   h (relativt centrum)
-		@buttons.push new Button 0,0.5,0, @,-10.5,  0, 7.5, 15, "","1+i"
-		@buttons.push new Button 1,0,0, @, 10.5,  0, 7.5, 15, "","-2i"
-		@buttons.push new Button 0.25,0.25,0.25, @,  0, -21, 7.5, 15, keys[0],"undo"
-		@buttons.push new Button 1,1,0, @,-10.5, 21, 7.5, 15, keys[1],"*i"
-		@buttons.push new Button 1,1,0, @,  0.0, 21, 7.5, 15, keys[2],"*2"
-		@buttons.push new Button 1,1,0, @, 10.5, 21, 7.5, 15, keys[3],"+1"
+		@buttons = []                             # x     y    w   h (relativt centrum)
+		@buttons.push new Button 0,0.5,0, @, 0,   -10.5,  7.5, 6, 12, "","1+i"
+		@buttons.push new Button 1,0,0,   @, 0,    10.5,  7.5, 6, 12, "","-2i"
+		@buttons.push new Button 0,0,0,   @, 0.2,   0,  -20.5, 6, 12, keys[0],"undo"
+		@buttons.push new Button 1,1,0,   @, 0.2, -10.5, 20.5, 6, 12, keys[1],"*i"
+		@buttons.push new Button 1,1,0,   @, 0.2,   0.0, 20.5, 6, 12, keys[2],"*2"
+		@buttons.push new Button 1,1,0,   @, 0.2,  10.5, 20.5, 6, 12, keys[3],"+1"
 
 	draw : ->
+		@complexBitmap()
 		if @keys == "WASD"
 			if @finished()
-				fc 0,1,0
+				fc 0,1,0,0.1
 			else
-				fc 0.5
+				fc 0.5,0.5,0.5,0.5
 		else
 			if @finished()
-				fc 0,1,0
+				fc 0,1,0,0.1
 			else
-				fc 0.5
+				fc 0.5,0.5,0.5,0.5
 
 		rect 0,0, width * @w / @M, height * @h / @N 
 		@buttons[0].txt = @top().toString()
 		@buttons[1].txt = @target.toString()
+		@buttons[2].txt = @level - @history.length + 1
+
 		for button in @buttons
 			button.draw()
-		textSize height/20
-		fc 0.25
-		text @level - @history.length + 1, -width*0.17, height * 0.18
-
-		@complexBitmap()
+		#textSize height/20
+		#fc 0.25
+		#text @level - @history.length + 1, -width*0.17, height * 0.18
 
 	complexBitmap : ->
-		n = int width/90 # pixels per unit
+		n = int width/40 # pixels per unit 90
 
 		fc 0
 		rect 0,0,20*n,20*n

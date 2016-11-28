@@ -10,7 +10,7 @@ class Game
 		@mode = 0                                                     
 		@players.push new Player "WASD",30,30, 60,60
 		@players.push new Player "&%('",90,30, 60,60
-		@display = new Button 0,0,0, @, 0, -22, 8, 12, "",""
+		@display = new Button 0,0,0, @, 0.2, 0, -22, 8, 12, "",""
 	push : ->
 		@stack.push [@x,@y,@a,@s]
 		push()
@@ -73,8 +73,8 @@ class Game
 
 	createProblem : ->
 		n = 999999 #int Math.pow 2, 2+@level/3 # nodes
-		x = int random 5
-		y = int random 5
+		x = int random -5,6
+		y = int random -5,6
 		a = new Complex x,y
 		lst = [a]
 		tree = {}
@@ -92,6 +92,7 @@ class Game
 				save item, item.mul(new Complex(2,0)) 
 				save item, item.add(new Complex(1,0)) 
 			lst = lst2
+			print lst
 		i = int random lst.length
 		b = lst[i]		
 		@solution = @path b,tree

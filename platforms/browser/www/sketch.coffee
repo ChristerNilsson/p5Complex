@@ -10,7 +10,7 @@ class Game
 		@mode = 0                                                     
 		@players.push new Player "WASD",30,30, 60,60
 		@players.push new Player "&%('",90,30, 60,60
-		@display = new Button @, 0, -22, 8, 12, "",""
+		@display = new Button 0,0,0, @, 0, -22, 8, 12, "",""
 	push : ->
 		@stack.push [@x,@y,@a,@s]
 		push()
@@ -65,33 +65,36 @@ class Game
 		n = 20 
 		H = height / n
 		textSize H
-		solution = solve(@players[0].history[0], @players[0].target)
 
-		for number,i in solution
+		for number,i in @solution
 			x = int i / n
 			y = int i % n
-			text number, x*100, -8.5*H + y*H		
+			text number.toString(), x*100, -8.5*H + y*H		
 
 	createProblem : ->
-		n = int Math.pow 2, 4+@level/3 # nodes
-		a = int random 1,n/2
+		n = 999999 #int Math.pow 2, 2+@level/3 # nodes
+		x = int random 5
+		y = int random 5
+		a = new Complex x,y
 		lst = [a]
-		tree = [a]
+		tree = {}
+		tree[a.toString()] = null 
 		lst2 = []
-		save = (item) ->
-			if Math.floor(item) == item and item <= n
-				if item not in tree
-					lst2.push item
-					tree.push item
+		save = (item1, item2) ->
+			if abs(item2.x) <= n and abs(item2.y) <= n
+				if item2 not of tree
+					lst2.push item2
+					tree[item2] = item1
 		for j in range @level
 			lst2 = []
 			for item in lst
-				save item+2 
-				save item*2
-				save item/2
+				save item, item.mul(new Complex(0,1)) 
+				save item, item.mul(new Complex(2,0)) 
+				save item, item.add(new Complex(1,0)) 
 			lst = lst2
 		i = int random lst.length
-		b = lst[i]
+		b = lst[i]		
+		@solution = @path b,tree
 
 		d = new Date()
 		ms = int d.getTime()
@@ -103,18 +106,24 @@ class Game
 			player.stopp = 0
 			player.level = @level
 
+	path : (b,tree) ->
+		return [] if b == null
+		@path(tree[b], tree).concat([b])
+
 setup = ->
 	createCanvas windowWidth, windowHeight
 	frameRate 15
 	textAlign CENTER,CENTER
 	rectMode CENTER
+	strokeCap SQUARE
+	noSmooth()
 	g = new Game()
 	g.createProblem()		
 	xdraw()
 
 xdraw = ->
 	g.push()
-	g.translate width/2, height/2	
+	g.translate int(width/2), int(height/2)	# integers needed here or blurry grid lines
 
 	for player,i in g.players
 		g.push()

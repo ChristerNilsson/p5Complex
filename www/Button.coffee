@@ -1,5 +1,5 @@
 class Button
-	constructor: (@r,@g,@b, @parent,@x,@y,@w,@h,@key,@txt) -> # sixties
+	constructor: (@r,@g,@b, @parent,@alpha,@x,@y,@w,@h,@key,@txt) -> # sixties
 		@w0=99
 		@h0=99
 
@@ -13,7 +13,7 @@ class Button
 		@w0 = g.s*width*@w/60
 		@h0 = g.s*height*@h/60
 
-		fc 1,1,1,0.5
+		fc 1,1,1,@alpha
 		rect 0, 0,  width*@w/60, height*@h/60
 
 		fc @r,@g,@b

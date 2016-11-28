@@ -4,32 +4,30 @@ class Player
 		@M = 120
 		@N = 60
 		@keys = keys
-		@x = width * x / @M # centrum pixels
-		@y = height * y / @N # centrum pixels
 		@history = [3]
 		@target = 2
 		@count = 0
 		@level = 0
 
 		@buttons = []              # x   y   w   h (relativt centrum)
-		@buttons.push new Button @,-10, -5, 7.5, 15, "","3"
-		@buttons.push new Button @, 10, -5, 7.5, 15, "","2"
-		@buttons.push new Button @,  0, -5, 7.5, 15, keys[0],"undo"
-		@buttons.push new Button @,-10, 15, 7.5, 15, keys[1],"/2"
-		@buttons.push new Button @,  0, 15, 7.5, 15, keys[2],"+2"
-		@buttons.push new Button @, 10, 15, 7.5, 15, keys[3],"*2"
+		@buttons.push new Button 0,0.5,0, @,-10.5,  0, 7.5, 15, "","1+i"
+		@buttons.push new Button 1,0,0, @, 10.5,  0, 7.5, 15, "","-2i"
+		@buttons.push new Button 0.25,0.25,0.25, @,  0, -21, 7.5, 15, keys[0],"undo"
+		@buttons.push new Button 1,1,0, @,-10.5, 21, 7.5, 15, keys[1],"*i"
+		@buttons.push new Button 1,1,0, @,  0.0, 21, 7.5, 15, keys[2],"*2"
+		@buttons.push new Button 1,1,0, @, 10.5, 21, 7.5, 15, keys[3],"+1"
 
 	draw : ->
 		if @keys == "WASD"
-			if @target==@top()
+			if @finished()
 				fc 0,1,0
 			else
-				fc 1,1,0
+				fc 0.5
 		else
-			if @target==@top()
+			if @finished()
 				fc 0,1,0
 			else
-				fc 1,0,0
+				fc 0.5
 
 		rect 0,0, width * @w / @M, height * @h / @N 
 		@buttons[0].txt = @top().toString()
@@ -37,21 +35,61 @@ class Player
 		for button in @buttons
 			button.draw()
 		textSize height/20
-		fc 0.5
-		text @level - @history.length + 1, 0, height * 0.45
+		fc 0.25
+		text @level - @history.length + 1, -width*0.17, height * 0.18
+
+		@complexBitmap()
+
+	complexBitmap : ->
+		n = int width/90 # pixels per unit
+
+		fc 0
+		rect 0,0,20*n,20*n
+		sc 1,1,0
+		sw 1
+		for i in range 21
+
+			# hor Lines
+			x1 = -10*n
+			y = lerp -10*n, -9*n, i
+			x2 = 10*n
+			line x1,y,x2,y
+
+			# ver lines
+			x = lerp -10*n, -9*n, i
+			y1 = -10*n
+			y2 = 10*n
+			line x,y1,x,y2 
+
+		sw 3
+		line 0,y1,0,y2
+		line x1,0,x2,0 
+
+		if ! @finished()
+			@complexPoint n,1,1,0, @top().mul new Complex 0,1
+			@complexPoint n,1,1,0, @top().mul new Complex 2,0
+			@complexPoint n,1,1,0, @top().add new Complex 1,0
+		@complexPoint n,1,0,0, @target
+		@complexPoint n,0,1,0, @top()
+
+	complexPoint : (n,r,g,b,c)->
+		if abs(c.x) <= 10 and abs(c.y) <= 10 
+			fc r,g,b,0.75
+			sc()
+			circle n*c.x,-n*c.y,n/2
 
 	process : (key) ->
-		if @target==@top()
+		if @finished()
 			return
 		@history.pop() if key==@keys[0] and @history.length>1
-		@save(@top() / 2) if key==@keys[1] and @top()%2==0
-		@save(@top() + 2) if key==@keys[2] 
-		@save(@top() * 2) if key==@keys[3]
+		@save(@top().mul(new Complex(0,1))) if key==@keys[1]
+		@save(@top().mul(new Complex(2,0))) if key==@keys[2]
+		@save(@top().add(new Complex(1,0))) if key==@keys[3] 
 
 	save : (value) ->
 		@count++
 		@history.push value
-		if @target==@top()
+		if @finished()
 			d = new Date()
 			ms = d.getTime()
 			@stopp = int ms 
@@ -62,7 +100,7 @@ class Player
 
 	score : -> (@stopp - @start)/1000 + @count * 10 
 	top : -> @history[@history.length-1]
-	finished : -> @top() == @target		
+	finished : -> @top().toString() == @target.toString()		
 	perfect : (level) -> @finished() and @count <= level
 
 	digits = (x) ->
