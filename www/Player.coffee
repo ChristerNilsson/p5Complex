@@ -12,25 +12,21 @@ class Player
 		@buttons = []                             # x     y    w   h (relativt centrum)
 		@buttons.push new Button 0,0.5,0, @, 0,   -7.5, -24, 6, 12, "","a"
 		@buttons.push new Button 1,0,0,   @, 0,    7.5, -24, 6, 12, "","b"
-		@buttons.push new Button 0,0,0,   @, 0.2,   0,  -24, 6, 12, keys[0],"1"
+		@buttons.push new Button 0,0,0,   @, 0.2,   0,  -24, 6, 12, keys[0],"1" # undo
 		@buttons.push new Button 1,1,0,   @, 0.2, -10.5, 24, 6, 12, keys[1],"*i"
 		@buttons.push new Button 1,1,0,   @, 0.2,   0.0, 24, 6, 12, keys[2],"*2"
 		@buttons.push new Button 1,1,0,   @, 0.2,  10.5, 24, 6, 12, keys[3],"+1"
 
 	draw : ->
 		@complexBitmap()
-		if @keys == "WASD"
-			if @finished()
-				fc 0,1,0,0.1
-			else
-				fc 0.5,0.5,0.5,0.5
+		if @finished()
+			fc 0,1,0,0.1
 		else
-			if @finished()
-				fc 0,1,0,0.1
-			else
-				fc 0.5,0.5,0.5,0.5
+			fc 0.5,0.5,0.5,0.5
 
 		rect 0,0, width * @w / @M, height * @h / @N 
+		print @history
+		@buttons[2].alpha = if @history.length == 1 then 0 else 0.2
 		@buttons[0].txt = @top().toString()
 		@buttons[1].txt = @target.toString()
 		@buttons[2].txt = @level - @history.length + 1
@@ -39,7 +35,7 @@ class Player
 			button.draw()
 
 	complexBitmap : ->
-		n = int width/40 # pixels per unit 90
+		n = int width/40
 
 		fc 0
 		rect 0,0,20*n,20*n
@@ -71,7 +67,7 @@ class Player
 		@complexPoint n,0,1,0, @top()
 
 	complexPoint : (n,r,g,b,c)->
-		if abs(c.x) <= 10 and abs(c.y) <= 10 
+		if abs c.x <= 10 and abs c.y <= 10 
 			fc r,g,b,0.75
 			sc()
 			circle n*c.x,-n*c.y,n/2
@@ -80,9 +76,9 @@ class Player
 		if @finished()
 			return
 		@history.pop() if key==@keys[0] and @history.length>1
-		@save(@top().mul(new Complex(0,1))) if key==@keys[1]
-		@save(@top().mul(new Complex(2,0))) if key==@keys[2]
-		@save(@top().add(new Complex(1,0))) if key==@keys[3] 
+		@save @top().mul new Complex 0,1 if key==@keys[1]
+		@save @top().mul new Complex 2,0 if key==@keys[2]
+		@save @top().add new Complex 1,0 if key==@keys[3] 
 
 	save : (value) ->
 		@count++
@@ -93,8 +89,8 @@ class Player
 			@stopp = int ms 
 
 	mousePressed : -> button.mousePressed() for button in @buttons 
-	touchStarted : (x,y) -> button.touchStarted(x,y) for button in @buttons 
-	keyPressed : (key) -> button.keyPressed(key) for button in @buttons
+	touchStarted : (x,y) -> button.touchStarted x,y for button in @buttons 
+	keyPressed : (key) -> button.keyPressed key for button in @buttons
 
 	score : -> (@stopp - @start)/1000 + @count * 10 
 	top : -> @history[@history.length-1]
@@ -102,10 +98,10 @@ class Player
 	perfect : (level) -> @finished() and @count <= level
 
 	digits = (x) ->
-		return x.toFixed(3) if x<100
-		return x.toFixed(2) if x<1000
-		return x.toFixed(1) if x<10000
-		return x.toFixed(0)
+		return x.toFixed 3 if x<100
+		return x.toFixed 2 if x<1000
+		return x.toFixed 1 if x<10000
+		return x.toFixed 0
 
 	result :() ->
 		n = 20

@@ -113,7 +113,7 @@ class Game
 
 	path : (b,tree) ->
 		return [] if b == null
-		@path(tree[b], tree).concat([b])
+		@path(tree[b], tree).concat [b]
 
 	selectTarget : (lst) -> # within 21x21 window, if possible
 		bs = (item for item in lst when -10 < item.x <= 10 and -10 < item.y <= 10)
@@ -149,9 +149,9 @@ touchStarted = ->
 		if touch.id not of ids 
 			ids[touch.id] = touch
 			for player in g.players
-				player.touchStarted(touch.x,touch.y)
+				player.touchStarted touch.x,touch.y
 	ids = {} if touch.length == 0
-	g.display.touchStarted(touch.x,touch.y)
+	g.display.touchStarted touch.x,touch.y
 	xdraw()
 
 mousePressed = ->
@@ -161,10 +161,6 @@ mousePressed = ->
 
 keyPressed = ->
 	if key == ' ' 
-		#if g.mode==0
-			#autolevel()
-			#g.createProblem()
-		#else
 		g.display.keyPressed(key)
 	else
 		player.keyPressed(key) for player in g.players
