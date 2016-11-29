@@ -100,6 +100,7 @@ class Game
 			
 		b = @selectTarget lst
 		@solution = @path b,tree
+		# console.log @solution.join(' ')
 
 		d = new Date()
 		ms = int d.getTime()
@@ -117,7 +118,8 @@ class Game
 
 	selectTarget : (lst) -> # within 21x21 window, if possible
 		bs = (item for item in lst when -10 < item.x <= 10 and -10 < item.y <= 10)
-		_.sample if bs.length > 0 then bs else lst
+		return _.sample bs if bs.length > 0
+		_.min lst, (item) -> dist 0,0,item.x,item.y
 
 setup = ->
 	createCanvas windowWidth, windowHeight
