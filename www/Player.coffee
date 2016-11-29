@@ -20,12 +20,11 @@ class Player
 	draw : ->
 		@complexBitmap()
 		if @finished()
-			fc 0,1,0,0.1
-		else
-			fc 0.5,0.5,0.5,0.5
+			fc 0,1,0,0.1 # green
+			rect 0,0, width * @w / @M, height * @h / @N 
+		#else
+		#	fc 0
 
-		rect 0,0, width * @w / @M, height * @h / @N 
-		print @history
 		@buttons[2].alpha = if @history.length == 1 then 0 else 0.2
 		@buttons[0].txt = @top().toString()
 		@buttons[1].txt = @target.toString()
@@ -36,28 +35,20 @@ class Player
 
 	complexBitmap : ->
 		n = int width/40
+		m = 10*n
 
 		fc 0
 		rect 0,0,20*n,20*n
 		sc 1,1,0
 		sw 1
 		for i in range 21
-
-			# hor Lines
-			x1 = -10*n
-			y = lerp -10*n, -9*n, i
-			x2 = 10*n
-			line x1,y,x2,y
-
-			# ver lines
-			x = lerp -10*n, -9*n, i
-			y1 = -10*n
-			y2 = 10*n
-			line x,y1,x,y2 
+			p = lerp -10*n, -9*n, i 
+			line -m,p,m,p # hor lines
+			line p,-m,p,m # ver lines
 
 		sw 3
-		line 0,y1,0,y2
-		line x1,0,x2,0 
+		line 0,-m,0,m
+		line -m,0,m,0 
 
 		if ! @finished()
 			@complexPoint n,1,1,0, @top().mul new Complex 0,1
@@ -67,7 +58,7 @@ class Player
 		@complexPoint n,0,1,0, @top()
 
 	complexPoint : (n,r,g,b,c)->
-		if abs c.x <= 10 and abs c.y <= 10 
+		if abs(c.x) <= 10 and abs(c.y) <= 10 
 			fc r,g,b,0.75
 			sc()
 			circle n*c.x,-n*c.y,n/2
@@ -110,7 +101,7 @@ class Player
 		fill @color
 		H = height / n
 		textSize H
-		if @keys=="WASD" # left
+		if @keys == "WASD" # left
 			x0 = -width/8
 			dx = -width/8
 		else

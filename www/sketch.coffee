@@ -125,7 +125,7 @@ setup = ->
 	textAlign CENTER,CENTER
 	rectMode CENTER
 	strokeCap SQUARE
-	noSmooth()
+	#noSmooth()
 	g = new Game()
 	g.createProblem()		
 	xdraw()
