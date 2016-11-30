@@ -1,6 +1,6 @@
 class Player
 
-	constructor: (keys,x,y,@w,@h) ->  # sixties
+	constructor: (keys,x,y,@w,@h,@bitmap) ->  # sixties
 		@M = 120
 		@N = 60
 		@keys = keys
@@ -18,7 +18,7 @@ class Player
 		@buttons.push new Button 1,1,0,   @, 0.2,  10.5, 24, 6, 12, keys[3],"+1"
 
 	draw : ->
-		@complexBitmap()
+		@complexBitmap() if @bitmap 
 		if @finished()
 			fc 0,1,0,0.1 # green
 			rect 0,0, width * @w / @M, height * @h / @N 
