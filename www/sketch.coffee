@@ -8,13 +8,10 @@ class Game
 		w = width
 		h = height   
 		@mode = 0     
+		@bitmap = true 
 
-		params = getParameters()
-		@bitmap = params.b != '0'
-		console.log @bitmap 
-
-		@players.push new Player "WASD",30,30, 60,60,@bitmap
-		@players.push new Player "&%('",90,30, 60,60,@bitmap
+		@players.push new Player "WASD",30,30, 60,60
+		@players.push new Player "&%('",90,30, 60,60
 		@display =  new Button 0,0,0, @, 0.2, 0, -24, 6, 12, "",""
 
 	push : ->
@@ -126,11 +123,6 @@ class Game
 		return _.sample bs if bs.length > 0
 		_.min lst, (item) -> dist 0,0,item.x,item.y
 
-getParameters = () ->
-	h = window.location.href
-	arr = h.slice(h.indexOf('?') + 1).split('&')
-	_.object(f.split '=' for f in arr)
-
 setup = ->
 	createCanvas windowWidth, windowHeight
 	frameRate 15
@@ -174,6 +166,8 @@ mousePressed = ->
 keyPressed = ->
 	if key == ' ' 
 		g.display.keyPressed(key)
+	else if key == 'B'
+		g.bitmap = not g.bitmap
 	else
 		player.keyPressed(key) for player in g.players
 	xdraw()

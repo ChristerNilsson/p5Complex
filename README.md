@@ -17,4 +17,4 @@
 
 ## Without coordinate system
 
-Use [No coordinate system](christernilsson.github.io/index.html?b=0)
+Key b toogles coordinate system on and off.
