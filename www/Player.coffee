@@ -10,15 +10,15 @@ class Player
 		@level = 0
 
 		@buttons = []                             # x     y    w   h (relativt centrum)
-		@buttons.push new Button 0,0.5,0, @, 0,   -7.5, -24, 6, 12, "","a"
+		@buttons.push new Button 0,1,0,   @, 0,   -7.5, -24, 6, 12, "","a"
 		@buttons.push new Button 1,0,0,   @, 0,    7.5, -24, 6, 12, "","b"
-		@buttons.push new Button 0,0,0,   @, 0.2,   0,  -24, 6, 12, keys[0],"1" # undo
+		@buttons.push new Button 1,1,1,   @, 0.2,   0,  -24, 6, 12, keys[0],"1" # undo
 		@buttons.push new Button 1,1,0,   @, 0.2, -10.5, 24, 6, 12, keys[1],"*i"
 		@buttons.push new Button 1,1,0,   @, 0.2,   0.0, 24, 6, 12, keys[2],"*2"
 		@buttons.push new Button 1,1,0,   @, 0.2,  10.5, 24, 6, 12, keys[3],"+1"
 
 	draw : ->
-		@complexBitmap() if g.bitmap 
+		@gridWithOneMove() if g.bitmap 
 		if @finished()
 			fc 0,1,0,0.1 # green
 			rect 0,0, width * @w / @M, height * @h / @N 
@@ -31,22 +31,25 @@ class Player
 		for button in @buttons
 			button.draw()
 
-	complexBitmap : ->
-		n = int width/40
-		m = 10*n
-
+	grid : (m,n) ->
 		fc 0
 		rect 0,0,20*n,20*n
 		sc 1,1,0
 		sw 1
+		strokeCap SQUARE
 		for i in range 21
 			p = lerp -10*n, -9*n, i 
 			line -m,p,m,p # hor lines
 			line p,-m,p,m # ver lines
-
 		sw 3
 		line 0,-m,0,m
 		line -m,0,m,0 
+
+	gridWithOneMove : ->
+		n = int width/40
+		m = 10*n
+
+		@grid m,n
 
 		if ! @finished()
 			@complexPoint n,1,1,0, @top().mul new Complex 0,1
@@ -55,11 +58,44 @@ class Player
 		@complexPoint n,1,0,0, @target
 		@complexPoint n,0,1,0, @top()
 
-	complexPoint : (n,r,g,b,c)->
+	draw_path : (path,n,thickness, r,g,b) ->
+		sw thickness
+		fc()
+		sc r,g,b
+		strokeCap ROUND
+		for move,i in path
+			continue if i == 0
+			a = path[i-1]
+			radius = n*dist(0,0,a.x,a.y) 
+			if radius == n*dist(0,0,move.x,move.y) 
+				start = - HALF_PI + atan2 a.x,a.y
+				stopp = - HALF_PI + atan2 move.x,move.y
+				print a.x,a.y, move.x,move.y, radius,start,stopp
+				arc 0,0, 2*radius,2*radius, stopp,start
+			else
+				line n*a.x, -n*a.y, n*move.x, -n*move.y
+
+	gridWithAllMoves : ->
+		n = int width/40
+		m = 10*n
+		@grid m,n
+
+		@draw_path @history,  n,9, 1,1,1
+		@draw_path g.solution,n,1, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
+
+		for move in @history
+			@complexPoint n,1,1,0, move, n/2-2
+		for move in g.solution
+			@complexPoint n,1,1,0, move, n/4
+
+		@complexPoint n,1,0,0, @target
+		@complexPoint n,0,1,0, @history[0]
+
+	complexPoint : (n,r,g,b,c,radius=n/2-2)->
 		if abs(c.x) <= 10 and abs(c.y) <= 10 
-			fc r,g,b,0.75
 			sc()
-			circle n*c.x,-n*c.y,n/2
+			fc r,g,b,0.75
+			circle n*c.x,-n*c.y,radius
 
 	process : (key) ->
 		if @finished()
@@ -96,17 +132,21 @@ class Player
 		n = 20
 		if @stopp == 0
 			return
-		fill @color
+
+		@gridWithAllMoves()
+
+		#fill @color
 		H = height / n
 		textSize H
 		if @keys == "WASD" # left
-			x0 = -width/8
-			dx = -width/8
+		 	x0 = -width/8
+		# 	dx = -width/8
 		else
 			x0 = width/8
-			dx = width/8
+		# 	dx = width/8
 		text digits(@score()), x0, -9.5*H 
-		for number,i in @history
-			x = int i / (n-1)
-			y = int i % (n-1)
-			text number, x0+x*dx, -8.5*H + y*H
+		# for number,i in @history
+		# 	x = int i / (n-1)
+		# 	y = int i % (n-1)
+		# 	text number, x0+x*dx, -8.5*H + y*H
+

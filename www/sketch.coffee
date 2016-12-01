@@ -12,7 +12,7 @@ class Game
 
 		@players.push new Player "WASD",30,30, 60,60
 		@players.push new Player "&%('",90,30, 60,60
-		@display =  new Button 0,0,0, @, 0.2, 0, -24, 6, 12, "",""
+		@display =  new Button 1,1,1, @, 0.2, 0, -24, 6, 12, "",""
 
 	push : ->
 		@stack.push [@x,@y,@a,@s]
@@ -102,7 +102,10 @@ class Game
 			
 		b = @selectTarget lst
 		@solution = @path b,tree
-		# console.log @solution.join(' ')
+		#a = new Complex(0,3)
+		#b = new Complex(0,-5)
+		#@solution = [new Complex(0,3), new Complex(-3,0),new Complex(-6,0),new Complex(-5,0),new Complex(0,-5)]
+		print @solution.join(' ')
 
 		d = new Date()
 		ms = int d.getTime()
@@ -128,7 +131,6 @@ setup = ->
 	frameRate 15
 	textAlign CENTER,CENTER
 	rectMode CENTER
-	strokeCap SQUARE
 	#noSmooth()
 	g = new Game()
 	g.createProblem()		
@@ -142,10 +144,12 @@ xdraw = ->
 	for player,i in g.players
 		g.push()
 		g.translate (2*i-1) * width/4, 0
-		player.draw()
+		if g.mode==0
+			player.draw()
+		else
+			player.result() 
 		g.pop()
 	g.display.draw()	
-	g.result() if g.mode==1
 	g.pop()
 
 touchStarted = -> 
@@ -165,11 +169,11 @@ mousePressed = ->
 
 keyPressed = ->
 	if key == ' ' 
-		g.display.keyPressed(key)
+		g.display.keyPressed key
 	else if key == 'B'
 		g.bitmap = not g.bitmap
 	else
-		player.keyPressed(key) for player in g.players
+		player.keyPressed key for player in g.players
 	xdraw()
 
 autolevel = ->
