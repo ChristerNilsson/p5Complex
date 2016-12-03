@@ -102,9 +102,6 @@ class Game
 			
 		b = @selectTarget lst
 		@solution = @path b,tree
-		#a = new Complex(0,3)
-		#b = new Complex(0,-5)
-		#@solution = [new Complex(0,3), new Complex(-3,0),new Complex(-6,0),new Complex(-5,0),new Complex(0,-5)]
 		print @solution.join(' ')
 
 		d = new Date()
@@ -131,7 +128,6 @@ setup = ->
 	frameRate 15
 	textAlign CENTER,CENTER
 	rectMode CENTER
-	#noSmooth()
 	g = new Game()
 	g.createProblem()		
 	xdraw()

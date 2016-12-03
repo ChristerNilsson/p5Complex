@@ -128,25 +128,17 @@ class Player
 		return x.toFixed 1 if x<10000
 		return x.toFixed 0
 
-	result :() ->
+	result : ->
 		n = 20
 		if @stopp == 0
 			return
 
 		@gridWithAllMoves()
 
-		#fill @color
 		H = height / n
 		textSize H
 		if @keys == "WASD" # left
 		 	x0 = -width/8
-		# 	dx = -width/8
 		else
 			x0 = width/8
-		# 	dx = width/8
 		text digits(@score()), x0, -9.5*H 
-		# for number,i in @history
-		# 	x = int i / (n-1)
-		# 	y = int i % (n-1)
-		# 	text number, x0+x*dx, -8.5*H + y*H
-
