@@ -4,7 +4,7 @@ class Player
 		@M = 120
 		@N = 60
 		@keys = keys
-		@history = [3]
+		@history = []
 		@target = 2
 		@count = 0
 		@level = 0
@@ -13,9 +13,10 @@ class Player
 		@buttons.push new Button 0,1,0,   @, 0,   -7.5, -24, 6, 12, "","a"
 		@buttons.push new Button 1,0,0,   @, 0,    7.5, -24, 6, 12, "","b"
 		@buttons.push new Button 1,1,1,   @, 0.2,   0,  -24, 6, 12, keys[0],"1" # undo
-		@buttons.push new Button 1,1,0,   @, 0.2, -10.5, 24, 6, 12, keys[1],"*i"
-		@buttons.push new Button 1,1,0,   @, 0.2,   0.0, 24, 6, 12, keys[2],"*2"
-		@buttons.push new Button 1,1,0,   @, 0.2,  10.5, 24, 6, 12, keys[3],"+1"
+		@buttons.push new Button 1,1,0,   @, 0.2,   -11, 24, 6, 12, keys[4],"m"
+		@buttons.push new Button 1,1,0,   @, 0.2, -3.67, 24, 6, 12, keys[1],"*i"
+		@buttons.push new Button 1,1,0,   @, 0.2,  3.67, 24, 6, 12, keys[2],"*2"
+		@buttons.push new Button 1,1,0,   @, 0.2,  11, 24, 6, 12, keys[3],"+1"
 
 	draw : ->
 		@gridWithOneMove() if g.bitmap 
@@ -34,7 +35,7 @@ class Player
 	grid : (m,n) ->
 		fc 0
 		rect 0,0,20*n,20*n
-		sc 1,1,0
+		sc 1,1,1
 		sw 1
 		strokeCap SQUARE
 		for i in range 21
@@ -55,6 +56,7 @@ class Player
 			@complexPoint n,1,1,0, @top().mul new Complex 0,1
 			@complexPoint n,1,1,0, @top().mul new Complex 2,0
 			@complexPoint n,1,1,0, @top().add new Complex 1,0
+			@complexPoint n,1,1,0, @top().mir()
 		@complexPoint n,1,0,0, @target
 		@complexPoint n,0,1,0, @top()
 
@@ -67,10 +69,10 @@ class Player
 			continue if i == 0
 			a = path[i-1]
 			radius = n*dist(0,0,a.x,a.y) 
-			if radius == n*dist(0,0,move.x,move.y) 
+			if radius == n*dist(0,0,move.x,move.y) and not (move.x == a.y and move.y == a.x)
 				start = - HALF_PI + atan2 a.x,a.y
 				stopp = - HALF_PI + atan2 move.x,move.y
-				print a.x,a.y, move.x,move.y, radius,start,stopp
+				#print a.x,a.y, move.x,move.y, radius,start,stopp
 				arc 0,0, 2*radius,2*radius, stopp,start
 			else
 				line n*a.x, -n*a.y, n*move.x, -n*move.y
@@ -81,7 +83,7 @@ class Player
 		@grid m,n
 
 		@draw_path @history,  n,9, 1,1,1
-		@draw_path g.solution,n,1, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
+		@draw_path g.solution,n,5, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
 
 		for move in @history
 			@complexPoint n,1,1,0, move, n/2-2
@@ -91,7 +93,7 @@ class Player
 		@complexPoint n,1,0,0, @target
 		@complexPoint n,0,1,0, @history[0]
 
-	complexPoint : (n,r,g,b,c,radius=n/2-2)->
+	complexPoint : (n,r,g,b,c,radius=n/2-(g*2))->
 		if abs(c.x) <= 10 and abs(c.y) <= 10 
 			sc()
 			fc r,g,b,0.75
@@ -100,10 +102,11 @@ class Player
 	process : (key) ->
 		if @finished()
 			return
-		@history.pop() if key==@keys[0] and @history.length>1
-		@save @top().mul new Complex 0,1 if key==@keys[1]
-		@save @top().mul new Complex 2,0 if key==@keys[2]
-		@save @top().add new Complex 1,0 if key==@keys[3] 
+		@history.pop() if keyCode==@keys[0] and @history.length>1
+		@save @top().mul new Complex 0,1 if keyCode==@keys[1]
+		@save @top().mul new Complex 2,0 if keyCode==@keys[2]
+		@save @top().add new Complex 1,0 if keyCode==@keys[3] 
+		@save @top().mir() if keyCode==@keys[4] 
 
 	save : (value) ->
 		@count++
@@ -117,10 +120,12 @@ class Player
 	touchStarted : (x,y) -> button.touchStarted x,y for button in @buttons 
 	keyPressed : (key) -> button.keyPressed key for button in @buttons
 
-	score : -> (@stopp - @start)/1000 + @count * 10 
+#	score : -> (@stopp - @start)/1000 + @count * 10 
+	score : -> (@stopp - @start)/1000 + (@history.length - 1) * 10 
 	top : -> @history[@history.length-1]
 	finished : -> @top().toString() == @target.toString()		
-	perfect : (level) -> @finished() and @count <= level
+	perfect : (level) ->
+		@finished() and @history.length - 1 <= level
 
 	digits = (x) ->
 		return x.toFixed 3 if x<100
@@ -138,15 +143,15 @@ class Player
 		#fill @color
 		H = height / n
 		textSize H
-		if @keys == "WASD" # left
-		 	x0 = -width/8
+		if _.isEqual @keys,[87, 65, 83, 68, 16]# left
+			x0 = width/8
 		# 	dx = -width/8
 		else
-			x0 = width/8
+			x0 = -width/8
 		# 	dx = width/8
 		text digits(@score()), x0, -9.5*H 
 		# for number,i in @history
 		# 	x = int i / (n-1)
 		# 	y = int i % (n-1)
-		# 	text number, x0+x*dx, -8.5*H + y*H
+		# 	text number, x0+x*dx, -8.5*H + y*H 
 
