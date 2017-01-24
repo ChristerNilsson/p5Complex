@@ -100,13 +100,14 @@ class Player
 			circle n*c.x,-n*c.y,radius
 
 	process : (key) ->
+		print "pro"
 		if @finished()
 			return
-		@history.pop() if keyCode==@keys[0] and @history.length>1
-		@save @top().mul new Complex 0,1 if keyCode==@keys[1]
-		@save @top().mul new Complex 2,0 if keyCode==@keys[2]
-		@save @top().add new Complex 1,0 if keyCode==@keys[3] 
-		@save @top().mir() if keyCode==@keys[4] 
+		@history.pop() if key == @keys[0] and @history.length>1
+		@save @top().mul new Complex 0,1 if key ==@keys[1]
+		@save @top().mul new Complex 2,0 if key ==@keys[2]
+		@save @top().add new Complex 1,0 if key ==@keys[3] 
+		@save @top().mir() if key ==@keys[4] 
 
 	save : (value) ->
 		@count++
