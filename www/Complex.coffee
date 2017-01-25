@@ -8,6 +8,8 @@ class Complex
 		c = other.x
 		d = other.y
 		new Complex a*c-b*d, b*c+a*d
+	mir : ->
+		new Complex @y, @x
 	toString : ->
 		sx = "" if @x == 0
 		sx = "#{@x}" if @x > 0

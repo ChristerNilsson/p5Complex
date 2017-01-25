@@ -10,8 +10,8 @@ class Game
 		@mode = 0     
 		@bitmap = true 
 
-		@players.push new Player "WASD",30,30, 60,60
-		@players.push new Player "&%('",90,30, 60,60
+		@players.push new Player [87,65,83,68,16],30,30, 60,60
+		@players.push new Player [38,37,40,39,17],90,30, 60,60
 		@display =  new Button 1,1,1, @, 0.2, 0, -24, 6, 12, "",""
 
 	push : ->
@@ -98,6 +98,7 @@ class Game
 				save item, item.mul c1
 				save item, item.mul c2
 				save item, item.add c3
+				save item, item.mir()
 			lst = lst2
 			
 		b = @selectTarget lst
@@ -164,6 +165,7 @@ mousePressed = ->
 	xdraw()
 
 keyPressed = ->
+	#print key, keyCode
 	if key == ' ' 
 		g.display.keyPressed key
 	else if key == 'B'
