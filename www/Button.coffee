@@ -23,7 +23,9 @@ class Button
 		text @txt,0,0 
 		g.pop()
 
-	mousePressed : -> @parent.process @key if @x0-@w0/2 <= mouseX <= @x0+@w0/2 and @y0-@h0/2 <= mouseY <= @y0+@h0/2 
+	mousePressed : () ->
+		print @key
+		@parent.process @key if @x0-@w0/2 <= mouseX <= @x0+@w0/2 and @y0-@h0/2 <= mouseY <= @y0+@h0/2 
 	touchStarted : (x,y) -> @parent.process @key if @x0-@w0/2 <= x <= @x0+@w0/2 and @y0-@h0/2 <= y <= @y0+@h0/2 
 	keyPressed : (key) -> @parent.process @key if @key == keyCode or key==" "
 			

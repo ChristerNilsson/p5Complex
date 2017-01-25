@@ -164,6 +164,7 @@ touchStarted = ->
 	xdraw()
 
 mousePressed = ->
+	print "h"
 	player.mousePressed() for player in g.players
 	g.display.mousePressed()
 	xdraw()
