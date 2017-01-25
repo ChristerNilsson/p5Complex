@@ -68,14 +68,28 @@ class Player
 		for move,i in path
 			continue if i == 0
 			a = path[i-1]
-			radius = n*dist(0,0,a.x,a.y) 
+			radius = n*dist 0,0,a.x,a.y 
 			if radius == n*dist(0,0,move.x,move.y) and not (move.x == a.y and move.y == a.x)
-				start = - HALF_PI + atan2 a.x,a.y
-				stopp = - HALF_PI + atan2 move.x,move.y
-				#print a.x,a.y, move.x,move.y, radius,start,stopp
-				arc 0,0, 2*radius,2*radius, stopp,start
+				start =  - HALF_PI + atan2 move.x,move.y
+				stopp = start + HALF_PI 
+				fc r,g,b 
+				sc()
+				if thickness==1
+					fc()
+					sc r,g,b
+					arc 0,0, 2*radius, 2*radius, start, stopp
+				else
+					@my_arc 0,0, radius, start, stopp, thickness
 			else
+				fc()
+				sc r,g,b
 				line n*a.x, -n*a.y, n*move.x, -n*move.y
+
+	my_arc : (x,y,r,start,stopp,thickness) ->
+		sw thickness
+		print start,stopp
+		for v in range start,stopp,0.01 
+			circle x+r*cos(v), y+r*sin(v), thickness/2
 
 	gridWithAllMoves : ->
 		n = int width/40
@@ -83,7 +97,7 @@ class Player
 		@grid m,n
 
 		@draw_path @history,  n,9, 1,1,1
-		@draw_path g.solution,n,5, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
+		@draw_path g.solution,n,1, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
 
 		for move in @history
 			@complexPoint n,1,1,0, move, n/2-2
@@ -100,7 +114,6 @@ class Player
 			circle n*c.x,-n*c.y,radius
 
 	process : (key) ->
-		print "pro"
 		if @finished()
 			return
 		@history.pop() if key == @keys[0] and @history.length>1
@@ -120,13 +133,10 @@ class Player
 	mousePressed : -> button.mousePressed() for button in @buttons 
 	touchStarted : (x,y) -> button.touchStarted x,y for button in @buttons 
 	keyPressed : (key) -> button.keyPressed key for button in @buttons
-
-#	score : -> (@stopp - @start)/1000 + @count * 10 
 	score : -> (@stopp - @start)/1000 + (@history.length - 1) * 10 
 	top : -> @history[@history.length-1]
 	finished : -> @top().toString() == @target.toString()		
-	perfect : (level) ->
-		@finished() and @history.length - 1 <= level
+	perfect : (level) -> @finished() and @history.length - 1 <= level
 
 	digits = (x) ->
 		return x.toFixed 3 if x<100
@@ -145,12 +155,6 @@ class Player
 		textSize H
 		if _.isEqual @keys,[87, 65, 83, 68, 16]# left
 			x0 = width/8
-		# 	dx = -width/8
 		else
 			x0 = -width/8
-		# 	dx = width/8
 		text digits(@score()), x0, -9.5*H 
-		# for number,i in @history
-		# 	x = int i / (n-1)
-		# 	y = int i % (n-1)
-		# 	text number, x0+x*dx, -8.5*H + y*H 

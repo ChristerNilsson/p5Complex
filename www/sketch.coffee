@@ -103,7 +103,7 @@ class Game
 			
 		b = @selectTarget lst
 		@solution = @path b,tree
-		print @solution.join(' ')
+		#print @solution.join(' ')
 
 		d = new Date()
 		ms = int d.getTime()
@@ -160,13 +160,11 @@ touchStarted = ->
 	xdraw()
 
 mousePressed = ->
-	print "h"
 	player.mousePressed() for player in g.players
 	g.display.mousePressed()
 	xdraw()
 
 keyPressed = ->
-	#print key, keyCode
 	if key == ' ' 
 		g.display.keyPressed key
 	else if key == 'B'
