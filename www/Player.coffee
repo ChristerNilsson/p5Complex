@@ -69,12 +69,13 @@ class Player
 			continue if i == 0
 			a = path[i-1]
 			radius = n*dist 0,0,a.x,a.y 
-			if radius == n*dist(0,0,move.x,move.y) and not (move.x == a.y and move.y == a.x)
+			mirror = move.x == a.y and move.y == a.x
+			if radius == n*dist(0,0,move.x,move.y) and not mirror
 				start =  - HALF_PI + atan2 move.x,move.y
 				stopp = start + HALF_PI 
 				fc r,g,b 
 				sc()
-				if thickness==1
+				if thickness==5
 					fc()
 					sc r,g,b
 					arc 0,0, 2*radius, 2*radius, start, stopp
@@ -96,8 +97,8 @@ class Player
 		m = 10*n
 		@grid m,n
 
-		@draw_path @history,  n,9, 1,1,1
-		@draw_path g.solution,n,1, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
+		@draw_path @history,   n,9, 1,1,1
+		@draw_path g.solution, n,5, 1,0,0  # bug in arc?. cannot handle strokeWeight > 1
 
 		for move in @history
 			@complexPoint n,1,1,0, move, n/2-2

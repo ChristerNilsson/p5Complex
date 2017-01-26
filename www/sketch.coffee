@@ -103,7 +103,6 @@ class Game
 			
 		b = @selectTarget lst
 		@solution = @path b,tree
-		#print @solution.join(' ')
 
 		d = new Date()
 		ms = int d.getTime()
