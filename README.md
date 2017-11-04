@@ -6,16 +6,12 @@
 - Each operation costs ten seconds.
 
 ## Usage
-
-- Click on the link above.
-* Button     Left Player   Right Player
-* Mirror     shift         Ctrl
-* Undo        W            Up
-* Rotate      A            Left
-* Scale       S            Down
-* Translate   D            Right
-- Space = Results
-
+```
+Button:   Mirror Undo Rotate Scale Translate     
+Player 1: Shift  W    A      S     D   
+Player 2: Ctrl   Up   Left   Down  Right
+Space = Results
+```
 ## Without Graphics
 
 Key b toogles graphics on and off.
