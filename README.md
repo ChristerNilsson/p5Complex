@@ -15,3 +15,10 @@ Space = Results
 ## Without Graphics
 
 Key b toogles graphics on and off.
+
+Platforms:
+
+* Windows Yes
+* iOS Yes
+* Android Yes
+* OSX ?
