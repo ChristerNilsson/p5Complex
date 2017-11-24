@@ -1,5 +1,6 @@
 g = 0
 ids = {}
+released = true
 
 class Game
 	constructor : (@x=0, @y=0, @a=0, @s=1, @stack=[]) ->
@@ -148,20 +149,36 @@ xdraw = ->
 	g.display.draw()	
 	g.pop()
 
-touchStarted = -> 
-	for touch in touches
-		if touch.id not of ids 
-			ids[touch.id] = touch
-			for player in g.players
-				player.touchStarted touch.x,touch.y
-	ids = {} if touch.length == 0
-	g.display.touchStarted touch.x,touch.y
-	xdraw()
+mouseReleased = -> # to make Android work 
+	released = true 
+	false
 
-mousePressed = ->
+touchStarted = -> 
 	player.mousePressed() for player in g.players
 	g.display.mousePressed()
 	xdraw()
+
+mousePressed = ->
+	if !released then return # to make Android work 
+	released = false
+	player.mousePressed() for player in g.players
+	g.display.mousePressed()
+	xdraw()	
+
+# touchStarted = -> 
+# 	for touch in touches
+# 		if touch.id not of ids 
+# 			ids[touch.id] = touch
+# 			for player in g.players
+# 				player.touchStarted touch.x,touch.y
+# 	ids = {} if touch.length == 0
+# 	g.display.touchStarted touch.x,touch.y
+# 	xdraw()
+
+# mousePressed = ->
+# 	player.mousePressed() for player in g.players
+# 	g.display.mousePressed()
+# 	xdraw()
 
 keyPressed = ->
 	if key == ' ' 
