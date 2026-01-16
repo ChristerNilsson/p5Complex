@@ -7,9 +7,9 @@ class Game
 		@players = []
 		@level = 1
 		w = width
-		h = height   
-		@mode = 0     
-		@bitmap = true 
+		h = height
+		@mode = 0
+		@bitmap = true
 
 		@players.push new Player [87,65,83,68,16],30,30, 60,60
 		@players.push new Player [38,37,40,39,17],90,30, 60,60
@@ -62,7 +62,7 @@ class Game
 		for player in @players
 			player.result()
 
-		@solve_result()	
+		@solve_result()
 
 	solve_result : ->
 		fill 0
@@ -81,7 +81,7 @@ class Game
 		a = new Complex x,y
 		lst = [a]
 		tree = {}
-		tree[a.toString()] = null 
+		tree[a.toString()] = null
 		lst2 = []
 
 		c1 = new Complex 0,1
@@ -111,7 +111,7 @@ class Game
 			player.history = [a]
 			player.target = b
 			player.count = 0
-			player.start = ms 
+			player.start = ms
 			player.stopp = 0
 			player.level = @level
 
@@ -130,7 +130,7 @@ setup = ->
 	textAlign CENTER,CENTER
 	rectMode CENTER
 	g = new Game()
-	g.createProblem()		
+	g.createProblem()
 	xdraw()
 
 xdraw = ->
@@ -144,26 +144,26 @@ xdraw = ->
 		if g.mode==0
 			player.draw()
 		else
-			player.result() 
+			player.result()
 		g.pop()
-	g.display.draw()	
+	g.display.draw()
 	g.pop()
 
 mouseReleased = -> # to make Android work 
-	released = true 
+	released = true
 	false
 
-touchStarted = -> 
+touchStarted = ->
 	player.mousePressed() for player in g.players
 	g.display.mousePressed()
 	xdraw()
 
 mousePressed = ->
-	if !released then return # to make Android work 
+	if !released then return # to make Android work
 	released = false
 	player.mousePressed() for player in g.players
 	g.display.mousePressed()
-	xdraw()	
+	xdraw()
 
 # touchStarted = -> 
 # 	for touch in touches
@@ -181,7 +181,7 @@ mousePressed = ->
 # 	xdraw()
 
 keyPressed = ->
-	if key == ' ' 
+	if key == ' '
 		g.display.keyPressed key
 	else if key == 'B'
 		g.bitmap = not g.bitmap
@@ -196,7 +196,7 @@ autolevel = ->
 		if player.finished()
 			finished++
 		if player.perfect g.level
-			perfect++	
+			perfect++
 	if perfect > 0
 		g.level++
 	else 

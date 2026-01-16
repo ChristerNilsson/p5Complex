@@ -1,4 +1,4 @@
-class Button
+class Button 
 	constructor: (@r,@g,@b, @parent,@alpha,@x,@y,@w,@h,@key,@txt) -> # sixties
 		@w0=99
 		@h0=99

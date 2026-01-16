@@ -1,4 +1,4 @@
-class Complex
+class Complex 
 	constructor : (@x,@y) ->
 	add : (other) ->
 		new Complex @x+other.x, @y+other.y

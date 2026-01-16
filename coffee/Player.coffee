@@ -1,4 +1,4 @@
-class Player
+class Player 
 
 	constructor: (keys,x,y,@w,@h) ->  # sixties
 		@M = 120
